@@ -8,10 +8,10 @@ FILEPATH = "tasks.json"
 
 # A collection of tasks
 class Tasks:
-    def __init__(self):
-        self.tasks = self._load_data()
+    def __init__(self, data):
+        self.tasks_list = data
         self.latest_id = (
-            0 if not self.tasks else max(task.get("id") for task in self.tasks)
+            0 if not self.tasks_list else max(task.get("id") for task in self.tasks_list)
         )
 
     def _load_data(self):
@@ -23,7 +23,7 @@ class Tasks:
             return data
 
     def _find_task_index(self, id):
-        for index, task in enumerate(self.tasks):
+        for index, task in enumerate(self.tasks_list):
             if task.get("id") == id:
                 return index
         return None
@@ -31,20 +31,20 @@ class Tasks:
     def add_task(self, description):
         self.latest_id += 1
         now = datetime.now().strftime("%m/%d/%Y, %H:%M:%S:%f")
-        self.tasks.append(Task(self.latest_id, description, "todo", now, now).to_dict())
+        self.tasks_list.append(Task(self.latest_id, description, "todo", now, now).to_dict())
         return True
 
     def delete_task(self, id):
         index = self._find_task_index(id)
         if index >= 0:
-            self.tasks.pop(index)
+            self.tasks_list.pop(index)
             return True
         return False
 
     def update_description(self, id, description):
         index = self._find_task_index(id)
         if index >= 0:
-            self.tasks[index].update(
+            self.tasks_list[index].update(
                 {
                     "description": description,
                     "updated_at": datetime.now().strftime("%m/%d/%Y, %H:%M:%S:%f"),
@@ -57,7 +57,7 @@ class Tasks:
         statuses = {1: "todo", 2: "in-progress", 3: "done"}
         index = self._find_task_index(id)
         if index >= 0:
-            self.tasks[index].update(
+            self.tasks_list[index].update(
                 {
                     "status": statuses.get(status),
                     "updated_at": datetime.now().strftime("%m/%d/%Y, %H:%M:%S:%f"),
