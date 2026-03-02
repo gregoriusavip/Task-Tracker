@@ -13,7 +13,8 @@ def pretty_print(tasks_list):
 
 def load_data():
     if not os.path.exists(FILEPATH):
-        with open(FILEPATH, "x"): pass
+        with open(FILEPATH, "w") as f:
+            json.dump([], f)
         return []
     else:
         with open(FILEPATH, "r") as f:
